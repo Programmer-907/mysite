@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Project Dashboard</title>
+  <style>
+    :root {
+      --bg: #f9fafb; --fg: #111;
+      --card: #fff; --accent-start: #4f46e5; --accent-end: #3b82f6;
+      --btn-shadow: rgba(59, 130, 246, 0.4);
+    }
+    body.dark {
+      --bg: #121212; --fg: #eee; --card: #1f2937;
+      --accent-start: #818cf8; --accent-end: #2563eb;
+      --btn-shadow: rgba(37, 99, 235, 0.6);
+    }
+    body {
+      margin: 0; padding: 1.5rem;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      transition: background 0.3s ease, color 0.3s ease;
+      min-height: 100vh;
+      user-select: none;
+    }
+    h1 {
+      margin-top: 0;
+    }
+    .card {
+      background: var(--card);
+      padding: 1rem 1.25rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      margin-bottom: 1.5rem;
+    }
+    body.dark .card {
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    textarea {
+      width: 100%;
+      min-height: 150px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      font-family: inherit;
+      font-size: 1rem;
+      resize: vertical;
+      margin-bottom: 1rem;
+      background: var(--card);
+      color: var(--fg);
+      transition: border-color 0.3s ease;
+    }
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent-end);
+      box-shadow: 0 0 8px var(--accent-end);
+    }
+    button {
+      background: linear-gradient(135deg, var(--accent-start), var(--accent-end));
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.6rem 1.25rem;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 5px 12px var(--btn-shadow);
+      transition: background 0.35s ease, box-shadow 0.35s ease, transform 0.15s ease;
+      user-select: none;
+    }
+    button:hover {
+      background: linear-gradient(135deg, var(--accent-end), var(--accent-start));
+      box-shadow: 0 8px 20px var(--btn-shadow);
+      transform: translateY(-2px);
+    }
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 3px 8px var(--btn-shadow);
+    }
+    .assets-list {
+      list-style: none;
+      padding-left: 0;
+      margin-top: 0;
+    }
+    .assets-list li {
+      background: rgba(0,0,0,0.05);
+      padding: 0.5rem 1rem;
+      margin-bottom: 0.5rem;
+      border-radius: 8px;
+      user-select: text;
+      cursor: default;
+    }
+    body.dark .assets-list li {
+      background: rgba(255,255,255,0.1);
+    }
+    .back-btn {
+      margin-bottom: 1rem;
+      display: inline-block;
+      text-decoration: none;
+      font-weight: 600;
+      color: var(--accent-end);
+      user-select: none;
+      cursor: pointer;
+      border: 2px solid transparent;
+      padding: 0.4rem 0.9rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+    .back-btn:hover {
+      background: var(--accent-end);
+      color: white;
+      border-color: var(--accent-end);
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="back-btn" aria-label="Back to main dashboard">← Back to VAULT</a>
+  <div class="card">
+    <h1 id="projectName">Loading...</h1>
+    <p id="projectDescription"></p>
+    <small id="projectCreated"></small>
+  </div>
+
+  <div class="card">
+    <h2>Notes</h2>
+    <textarea id="notes" placeholder="Write your project notes here..."></textarea>
+    <button id="saveNotesBtn">Save Notes</button>
+  </div>
+
+  <div class="card">
+    <h2>Assets</h2>
+    <p>(Feature coming soon...)</p>
+    <ul class="assets-list" id="assetsList"></ul>
+  </div>
+
+<script>
+  // Apply dark mode if set
+  if(localStorage.getItem('darkMode') === 'true'){
+    document.body.classList.add('dark');
+  }
+
+  // Parse query string for project name
+  function getQueryParam(param) {
+    const params = new URLSearchParams(window.location.search);
+    return params.get(param);
+  }
+
+  const projectName = getQueryParam('name');
+  if(!projectName){
+    alert('No project specified! Redirecting to main...');
+    window.location.href = 'index.html';
+  }
+
+  // Load projects list
+  let projects = JSON.parse(localStorage.getItem('vaultProjects') || '[]');
+  let project = projects.find(p => p.name === projectName);
+  if(!project){
+    alert(`Project "${projectName}" not found! Redirecting to main...`);
+    window.location.href = 'index.html';
+  }
+
+  // Show project info
+  document.getElementById('projectName').textContent = project.name;
+  document.getElementById('projectDescription').textContent = project.description || '(No description)';
+  const createdDate = new Date(project.created);
+  document.getElementById('projectCreated').textContent = 'Created: ' + createdDate.toLocaleDateString();
+
+  // Load notes (saved per project in localStorage)
+  const notesEl = document.getElementById('notes');
+  const notesKey = `vaultProjectNotes_${projectName}`;
+  notesEl.value = localStorage.getItem(notesKey) || '';
+
+  // Save notes button
+  document.getElementById('saveNotesBtn').addEventListener('click', () => {
+    localStorage.setItem(notesKey, notesEl.value);
+    alert('Notes saved!');
+  });
+</script>
+</body>
+</html>

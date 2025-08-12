@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cloud File & Note Share</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js" defer></script>
+  <script defer>
+    let supabase;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      supabase = window.supabase.createClient(
+        'https://lhkeimggsgjbagyivhro.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxoa2VpbWdnc2dqYmFneWl2aHJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwMTk3NjgsImV4cCI6MjA2ODU5NTc2OH0.wLZNKSwm9s9nwYOsUm-qGSPwykapTj4xQRvDeA9mCf8'
+      );
+
+      document.getElementById('uploadBtn').addEventListener('click', uploadFile);
+      listFiles();
+    });
+
+    async function uploadFile() {
+      const file = document.getElementById('fileInput').files[0];
+      if (!file) return alert("No file selected");
+
+      const { data, error } = await supabase.storage.from('files').upload(file.name, file, {
+        upsert: true,
+      });
+
+      if (error) {
+        alert('Upload failed: ' + error.message);
+        return;
+      }
+
+      alert('File uploaded!');
+      document.getElementById('fileInput').value = '';
+      listFiles();
+    }
+
+    async function listFiles() {
+  const { data, error } = await supabase.storage.from('files').list();
+
+  const list = document.getElementById('fileList');
+  list.innerHTML = '';
+
+  if (error) {
+    list.textContent = 'Failed to load files.';
+    return;
+  }
+
+  for (const file of data) {
+    const { data: signedUrlData, error: signedUrlError } = await supabase
+      .storage
+      .from('files')
+      .createSignedUrl(file.name, 60 * 60); // valid for 1 hour
+
+    if (signedUrlError) {
+      console.error('Signed URL error:', signedUrlError);
+      continue;
+    }
+
+    const url = signedUrlData.signedUrl;
+
+    const li = document.createElement('li');
+
+    // 🖼️ View link
+    const viewLink = document.createElement('a');
+    viewLink.href = url;
+    viewLink.textContent = '🔍 View';
+    viewLink.target = '_blank';
+    viewLink.style.marginRight = '10px';
+
+// 💾 Download link (custom download trigger)
+const downloadLink = document.createElement('a');
+downloadLink.href = '#';
+downloadLink.textContent = '⬇️ Download';
+downloadLink.addEventListener('click', async (e) => {
+  e.preventDefault();
+  try {
+    const response = await fetch(url);
+    const blob = await response.blob();
+
+    const downloadUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = downloadUrl;
+    a.download = file.name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(downloadUrl);
+  } catch (err) {
+    alert("Failed to download file.");
+    console.error(err);
+  }
+});
+
+    // 📁 File name label
+    const nameSpan = document.createElement('span');
+    nameSpan.textContent = `📄 ${file.name} — `;
+
+    li.appendChild(nameSpan);
+    li.appendChild(viewLink);
+    li.appendChild(downloadLink);
+    list.appendChild(li);
+  }
+}
+  </script>
+</head>
+<body>
+  <h1>📁 Cloud File Share</h1>
+
+  <h2>Upload File</h2>
+  <input type="file" id="fileInput" />
+  <button id="uploadBtn">Upload</button>
+
+  <h2>Files Available</h2>
+  <ul id="fileList"></ul>
+</body>
+</html>

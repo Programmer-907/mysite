@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>VAULT - Digital HQ</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <h2>VAULT</h2>
+    <ul>
+      <li><a href="#" id="homeBtn">🏠 Home</a></li>
+      <li><a href="settings.html">⚙️ Settings</a></li>
+    </ul>
+  </div>
+
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="recent-container" id="recentProjects"></div>
+    <button id="addProjectBtn">➕ Add Project</button>
+  </div>
+
+  <!-- Clock -->
+  <div class="clock" id="clock">--:--:--</div>
+
+  <!-- Main Container -->
+  <div class="container" id="dashboard"></div>
+
+  <!-- Project Creation Modal -->
+  <div class="modal" id="projectModal">
+    <div class="modal-content">
+      <h2>New Project</h2>
+      <label>Name:</label>
+      <input type="text" id="projectName" placeholder="Enter name" />
+      <label>Description:</label>
+      <textarea id="projectDesc" placeholder="Enter description"></textarea>
+      <div class="modal-actions">
+        <button id="createProject">Create</button>
+        <button id="cancelProject">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

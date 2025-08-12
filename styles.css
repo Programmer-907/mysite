@@ -1,0 +1,169 @@
+:root {
+  --bg-color: #f4f4f6;
+  --text-color: #111;
+  --card-color: #fff;
+  --accent-color: #4a90e2;
+}
+
+body.dark {
+  --bg-color: #1e1e1e;
+  --text-color: #f0f0f0;
+  --card-color: #2c2c2c;
+  --accent-color: #4a90e2;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: var(--bg-color);
+  color: var(--text-color);
+  transition: background 0.3s, color 0.3s;
+  display: flex;
+}
+
+#sidebar {
+  width: 200px;
+  padding: 1em;
+  background: var(--card-color);
+  height: 100vh;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#sidebar h2 {
+  margin-top: 0;
+  font-size: 1.2em;
+}
+
+#sidebar ul {
+  padding: 0;
+  list-style: none;
+}
+
+#sidebar ul li {
+  margin: 1em 0;
+}
+
+#sidebar a {
+  color: var(--text-color);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.topbar {
+  position: fixed;
+  left: 200px;
+  top: 0;
+  right: 0;
+  height: 60px;
+  background: var(--card-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5em;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  z-index: 10;
+}
+
+#addProjectBtn {
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5em 1em;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.clock {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  font-size: 1.2em;
+  background: var(--card-color);
+  padding: 0.5em 1em;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.container {
+  margin-top: 80px;
+  margin-left: 220px;
+  padding: 2em;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+}
+
+.tile {
+  background: var(--card-color);
+  padding: 1em;
+  border-radius: 10px;
+  width: 180px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.tile:hover {
+  transform: translateY(-5px);
+}
+
+.modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal-content {
+  background: var(--card-color);
+  padding: 2em;
+  border-radius: 12px;
+  width: 300px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+.modal-content h2 {
+  margin-top: 0;
+}
+
+.modal-content label {
+  display: block;
+  margin-top: 1em;
+  font-weight: bold;
+}
+
+.modal-content input,
+.modal-content textarea {
+  width: 100%;
+  margin-top: 0.5em;
+  padding: 0.5em;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1em;
+}
+
+.modal-actions {
+  margin-top: 1.5em;
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal-actions button {
+  padding: 0.5em 1em;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+#cancelProject {
+  background: #ccc;
+}
+
+#createProject {
+  background: var(--accent-color);
+  color: white;
+}

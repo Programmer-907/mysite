@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VAULT HQ - Settings</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #fafafa;
+      color: #222;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+      transition: background-color 0.5s ease, color 0.5s ease;
+    }
+    body.dark {
+      background-color: #111;
+      color: #f0f0f0;
+    }
+    .container {
+      max-width: 400px;
+      width: 100%;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      padding: 2rem;
+      transition: background-color 0.5s ease;
+    }
+    body.dark .container {
+      background: #1f2937;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+    }
+    h1 {
+      color: #3b82f6;
+      font-weight: 700;
+      font-size: 1.75rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    label {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 600;
+      user-select: none;
+      margin-bottom: 1.25rem;
+      font-size: 1.125rem;
+      cursor: pointer;
+    }
+    input[type="checkbox"] {
+      width: 1.25rem;
+      height: 1.25rem;
+      cursor: pointer;
+    }
+    .btn-main {
+      display: block;
+      margin: 2rem auto 0;
+      padding: 0.75rem 1.5rem;
+      background-color: #3b82f6;
+      color: white;
+      font-weight: 600;
+      border-radius: 8px;
+      text-align: center;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(59,130,246,0.5);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .btn-main:hover {
+      background-color: #2563eb;
+      box-shadow: 0 6px 16px rgba(37,99,235,0.6);
+    }
+  </style>
+</head>
+<body>
+  <div class="container" role="main">
+    <h1>⚙️ VAULT HQ Settings</h1>
+
+    <form id="settingsForm" aria-label="Appearance Settings">
+      <label for="darkModeToggle">
+        <input type="checkbox" id="darkModeToggle" />
+        Dark Mode
+      </label>
+
+      <label for="animationsToggle">
+        <input type="checkbox" id="animationsToggle" />
+        Enable Animations
+      </label>
+
+      <label for="clockFormatToggle">
+        <input type="checkbox" id="clockFormatToggle" />
+        24-Hour Clock
+      </label>
+    </form>
+
+    <a href="index.html" class="btn-main" aria-label="Go to main VAULT HQ page">← Back to VAULT HQ</a>
+  </div>
+
+  <script>
+    const darkToggle = document.getElementById('darkModeToggle');
+    const animationsToggle = document.getElementById('animationsToggle');
+    const clockToggle = document.getElementById('clockFormatToggle');
+
+    // Initialize toggles based on localStorage
+    function init() {
+      if(localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark');
+        darkToggle.checked = true;
+      }
+
+      animationsToggle.checked = localStorage.getItem('animationsEnabled') !== 'false';
+      if(!animationsToggle.checked) {
+        document.body.classList.add('no-animations');
+      }
+
+      clockToggle.checked = localStorage.getItem('clock24h') === 'true';
+    }
+    init();
+
+    darkToggle.addEventListener('change', (e) => {
+      document.body.classList.toggle('dark', e.target.checked);
+      localStorage.setItem('darkMode', e.target.checked);
+    });
+
+    animationsToggle.addEventListener('change', (e) => {
+      localStorage.setItem('animationsEnabled', e.target.checked);
+      if(e.target.checked) {
+        document.body.classList.remove('no-animations');
+      } else {
+        document.body.classList.add('no-animations');
+      }
+    });
+
+    clockToggle.addEventListener('change', (e) => {
+      localStorage.setItem('clock24h', e.target.checked);
+    });
+  </script>
+</body>
+</html>
